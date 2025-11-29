@@ -1,0 +1,5 @@
+board:
+  name: rp2350_eth
+  vendor: custom
+  socs:
+    - name: rp2350a
