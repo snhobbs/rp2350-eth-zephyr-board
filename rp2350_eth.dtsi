@@ -79,6 +79,37 @@
 
 &flash0 {
 	reg = <0x10000000 DT_SIZE_M(4)>;
+
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/* Reserved memory for an image definition block. The block is much
+		 * smaller than 256 bytes, but in practice the linker places the vector
+		 * table at a much larger alignment offset.
+		 */
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 0x10000>;
+		};
+
+		slot0_partition: partition@c000 {
+			label = "image-0";
+			reg = <0x000010000 0x10000>;
+		};
+
+		slot1_partition: partition@1a000 {
+			label = "image-1";
+			reg = <0x00020000 0x10000>;
+		};
+
+		storage_partition: partition@28000 {
+			label = "storage";
+			reg = <0x20000 (DT_SIZE_M(4) - 0x20000)>;
+		};
+
+	};
 };
 
 &uart0 {
