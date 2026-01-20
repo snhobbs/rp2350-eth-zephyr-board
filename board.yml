@@ -1,5 +1,14 @@
 board:
   name: rp2350_eth
-  vendor: custom
+  full_name: RP2350 Eth
+  vendor: waveshare
   socs:
     - name: rp2350a
+      variants:
+        - name: w
+          cpucluster: m33
+          variants:
+            - name: mcuboot
+              cpucluster: m33
+        - name: mcuboot
+          cpucluster: m33
