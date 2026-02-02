@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Stephano Cetola
+# Copyright (c) 2024 Andrew Featherstone
 # SPDX-License-Identifier: Apache-2.0
 
 if BOARD_RP2350_ETH
@@ -6,4 +6,4 @@ if BOARD_RP2350_ETH
 config USB_SELF_POWERED
 	default n
 
-endif # BOARD_RP2350_ETH
+endif # BOARD_RPI_PICO2

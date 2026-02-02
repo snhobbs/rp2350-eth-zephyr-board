@@ -14,34 +14,25 @@
 
 #include <zephyr/dt-bindings/dma/rpi-pico-dma-rp2350.h>
 
+#include <raspberrypi/rpi_pico/rp2350.dtsi>
+
 
 
 / {
 	chosen {
+		zephyr,uart-mcumgr = &cdc_acm_uart0;
+		zephyr,shell-uart = &cdc_acm_uart1;
+		zephyr,console = &cdc_acm_uart2;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
-		zephyr,shell-uart = &cdc_acm_uart0;
-		zephyr,console = &cdc_acm_uart0;
+		zephyr,flash-controller = &qmi;
 		//zephyr,console = &uart0;
 		//zephyr,shell-uart = &uart0;
-		zephyr,flash-controller = &flash0;
-		mcuboot-button0 = &button0;
-		//zephyr,code-partition = &slot0_partition;
 	};
 
 	aliases {
 		watchdog0 = &wdt0;
 		led-strip = &ws2812;
-		mcuboot-button0 = &button0;
-	};
-
-	buttons {
-		compatible = "gpio-keys";
-		button0: button_0 {
-			gpios = <&gpio0 23 GPIO_ACTIVE_LOW>;
-			label = "Push button switch 0";
-			//zephyr,code = <INPUT_KEY_0>;
-		};
 	};
 
 	wszero_header: connector {
@@ -77,26 +68,10 @@
 			   <28 0 &gpio0 28 0>,	/* GP28 */
 			   <29 0 &gpio0 29 0>;	/* GP29 */
 	};
-	/*
-    ethernet0: ch9120 {
-        compatible = "wchip,ch9120";
-
-        // Bind this UART to the CH9120 module
-        uart = <&uart1>;
-
-        // Reset input (active low typically)
-        reset-gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
-
-        // Configuration mode pin (CFG)
-        cfg-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
-
-        // TCPCS pin (selects TCP/Server vs TCP/Client)
-        tcpcs-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
-    };
-    */
 };
 
 &flash0 {
+	/delete-node/ partitions;
 	reg = <0x10000000 DT_SIZE_M(4)>;
 
 	partitions {
@@ -110,24 +85,23 @@
 		 */
 		boot_partition: partition@0 {
 			label = "mcuboot";
-			reg = <0x00000000 0x10000>;
+			reg = <0x00000000 0x20000>;
 		};
 
-		slot0_partition: partition@c000 {
+		slot0_partition: partition@20000 {
 			label = "image-0";
-			reg = <0x000010000 0x10000>;
+			reg = <0x00020000 0x100000>;
 		};
 
-		slot1_partition: partition@1a000 {
+		slot1_partition: partition@120000 {
 			label = "image-1";
-			reg = <0x00020000 0x10000>;
+			reg = <0x00120000 0x100000>;
 		};
 
-		storage_partition: partition@28000 {
+		storage_partition: partition@220000 {
 			label = "storage";
-			reg = <0x20000 (DT_SIZE_M(4) - 0x20000)>;
+			reg = <0x000220000 (DT_SIZE_M(4) - 0x220000)>;
 		};
-
 	};
 };
 
@@ -182,14 +156,6 @@
 	status = "okay";
 };
 
-/*
-&pwm {
-	pinctrl-0 = <&pwm_ch4b_default>;
-	pinctrl-names = "default";
-	divider-int-0 = <255>;
-};
-*/
-
 &timer0 {
 	status = "okay";
 };
@@ -206,7 +172,22 @@ zephyr_udc0: &usbd {
 		compatible = "zephyr,cdc-acm-uart";
 		label = "CDC_ACM_0";
 	};
-
+	cdc_acm_uart1: cdc_acm_uart1 {
+		status = "okay";
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_1";
+	};
+	cdc_acm_uart2: cdc_acm_uart2 {
+		status = "okay";
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_2";
+	};
+	/*
+	cdc_ecm_eth0: cdc_ecm_eth0 {
+		compatible = "zephyr,cdc-ecm-ethernet";
+		remote-mac-address = "00005e005301";
+	};
+	*/
 };
 
 
